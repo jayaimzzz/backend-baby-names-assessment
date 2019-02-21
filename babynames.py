@@ -10,6 +10,8 @@
 # Google's Python Class
 # http://code.google.com/edu/languages/google-python-class/
 
+__author__ = 'jayaimzzz'
+
 import sys
 import re
 import argparse
@@ -45,7 +47,22 @@ def extract_names(filename):
     followed by the name-rank strings in alphabetical order.
     ['2006', 'Aaliyah 91', Aaron 57', 'Abagail 895', ' ...]
     """
-    # +++your code here+++
+    with open(filename) as file:
+        data = file.read()
+        pattern = re.compile(r'Popularity\sin\s(\d{4})')
+        matches = pattern.finditer(data)
+        for match in matches:
+            year = match.group(1)
+        pattern = re.compile(r'<tr align="right"><td>(\d+)</td><td>(\w+)</td><td>(\w+)</td>')
+        matches = pattern.finditer(data)
+        list1 = []
+        for match in matches:
+            rank = match.group(1)
+            bname = match.group(2) + " " + rank
+            gname = match.group(3) + " " + rank
+            list1.append(bname)
+            list1.append(gname)
+        return [year] + sorted(list1)
     return
 
 
@@ -72,10 +89,17 @@ def main():
 
     # option flag
     create_summary = args.summaryfile
-
     # +++your code here+++
     # For each filename, get the names, then either print the text output
     # or write it to a summary file
+    for file in file_list:
+        data = extract_names(file)
+        if create_summary:
+            summaryfile = open("summary" + file,"w")
+            for item in data:
+                summaryfile.write(item + "\n")
+        else:
+            print data
 
 
 if __name__ == '__main__':
